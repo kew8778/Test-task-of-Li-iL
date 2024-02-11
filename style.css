@@ -11,11 +11,11 @@
 }
 
 .arrowRight::before {
-  content: url(./arrow-right.svg);
+  content: url(arrow-right.svg);
   margin-right: 0.5em;
 }
 
 .arrowDown::before {
-  content: url(./arrow-down.svg);
+  content: url(arrow-down.svg);
   margin-right: 0.5em;
 }
