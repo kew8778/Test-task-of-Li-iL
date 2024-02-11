@@ -1,5 +1,6 @@
 .prizeList ul {
   list-style-type: none;
+  padding-left: 1em;
 }
 
 .hidden {
@@ -10,12 +11,10 @@
   cursor: pointer;
 }
 
-.arrowRight::before {
-  content: url(arrow-right.svg);
-  margin-right: 0.5em;
+.arrowRight {
+  list-style-image: url(arrow-right.svg);
 }
 
-.arrowDown::before {
-  content: url(arrow-down.svg);
-  margin-right: 0.5em;
+.arrowDown {
+  list-style-image: url(arrow-down.svg);
 }

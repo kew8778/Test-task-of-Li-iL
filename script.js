@@ -29,7 +29,7 @@ function getList(arr, id = null) {
 
   let ul = document.createElement('ul');
 
-  if (id > 0) {
+  if (id) {
     ul.classList.add('hidden');
   }
 
