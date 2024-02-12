@@ -8,7 +8,6 @@ async function showList(parent) {
   const arr = (await getResponceServer()).services; // массив 'services' из данных серевера
   const lists = getObjLists(arr); // объект отсортированных списков
   parent.appendChild(getList(lists)); // вывод списка на страницу
-  addEvents(); // привязываем обработчики клика узловым элементам списка
 }
 
 // получаем DOM-дерево списка
@@ -21,14 +20,16 @@ function getList(obj, key = 'null') {
 
   for (let i = 0; i < obj[key].length; i++) {
     const li = document.createElement('li');
+    const item = obj[key][i];
 
-    if (obj[key][i].node) {
-      li.textContent = obj[key][i].name;
-      li.classList.add('arrowRight'); 
+    if (item.node) {
+      li.textContent = item.name;
+      li.classList.add('arrowRight');
+      addEvents(li); // добавление события клика
       ul.appendChild(li);
-      ul.appendChild(getList(obj, String( obj[key][i].id ))); // добавление внитренних списков
+      ul.appendChild(getList(obj, String(item.id))); // добавление внутренних списков
     } else {
-      li.textContent = `${obj[key][i].name} (${obj[key][i].price})`;
+      li.textContent = `${item.name} (${item.price})`;
       ul.appendChild(li);
     }
   }
@@ -42,11 +43,13 @@ function getObjLists(arr) {
   const lists = {};
 
   for (let i = 0; i < arr.length; i++) {
-    if ( !(lists[String(arr[i].head)]) ) {
-      lists[String(arr[i].head)] = [];
+    const key = String(arr[i].head);
+
+    if ( !(lists[key]) ) {
+      lists[key] = [];
     }
 
-    lists[String(arr[i].head)].push(arr[i]);
+    lists[key].push(arr[i]);
   }
 
   for (let key in lists) {
@@ -63,16 +66,12 @@ function getObjLists(arr) {
 }
 
 // добавление обработчика клика узловым пунктам списка
-function addEvents() {
-  const nodalItems = priceList.querySelectorAll('.arrowRight');
-
-  for (let i = 0; i < nodalItems.length; i++) {
-    nodalItems[i].addEventListener('click', function() {
-      this.classList.toggle('arrowRight');
-      this.classList.toggle('arrowDown');
-      this.nextElementSibling.classList.toggle('hidden');
-    });
-  }
+function addEvents(elem) {
+  elem.addEventListener('click', function() {
+    this.classList.toggle('arrowRight');
+    this.classList.toggle('arrowDown');
+    this.nextElementSibling.classList.toggle('hidden');
+  });
 }
 
 // имитация получения данных с сервера
