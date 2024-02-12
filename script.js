@@ -5,44 +5,30 @@ showList(priceList);
 
 // вывод списка на страницу
 async function showList(parent) {
-  let arr = (await getResponceServer()).services;
-  parent.appendChild(getList(arr));
+  const arr = (await getResponceServer()).services; // массив 'services' из данных серевера
+  const lists = getObjLists(arr); // объект отсортированных списков
+  parent.appendChild(getList(lists)); // вывод списка на страницу
+  addEvents(); // привязываем обработчики клика узловым элементам списка
 }
 
-// формирование списка из массива данных
-function getList(arr, id = null) {
-  let list = [];
+// получаем DOM-дерево списка
+function getList(obj, key = 'null') {
+  const ul = document.createElement('ul');
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i].head === id) {
-      list.push(arr[i]);
-    }
+  if (key > 0) {
+    ul.classList.add('hidden'); // скрываем внутренние списки
   }
 
-  list.sort((a, b) => {
-    if (a.sorthead > b.sorthead) {
-      return 1;
-    } else {
-      return -1;
-    }
-  })
+  for (let i = 0; i < obj[key].length; i++) {
+    const li = document.createElement('li');
 
-  let ul = document.createElement('ul');
-
-  if (id) {
-    ul.classList.add('hidden');
-  }
-
-  for (let i = 0; i < list.length; i++) {
-    let li = document.createElement('li');
-
-    if (list[i].node) {
-      li.textContent = list[i].name;
+    if (obj[key][i].node) {
+      li.textContent = obj[key][i].name;
+      li.classList.add('arrowRight'); 
       ul.appendChild(li);
-      ul.appendChild(getList(arr, list[i].id));
-      modItem(li);
+      ul.appendChild(getList(obj, String( obj[key][i].id ))); // добавление внитренних списков
     } else {
-      li.textContent = `${list[i].name} (${list[i].price})`;
+      li.textContent = `${obj[key][i].name} (${obj[key][i].price})`;
       ul.appendChild(li);
     }
   }
@@ -50,15 +36,43 @@ function getList(arr, id = null) {
   return ul;
 }
 
-// модификация узловых пунктов списка
-function modItem(elem) {
-  elem.classList.add('arrowRight');
+// преобразуем данные в объект отсортированных списков 
+// return {'id': [{объект с head == id}, ...], ...}
+function getObjLists(arr) {
+  const lists = {};
 
-  elem.addEventListener('click', function() {
-    this.classList.toggle('arrowRight');
-    this.classList.toggle('arrowDown');
-    this.nextElementSibling.classList.toggle('hidden');
-  });
+  for (let i = 0; i < arr.length; i++) {
+    if ( !(lists[String(arr[i].head)]) ) {
+      lists[String(arr[i].head)] = [];
+    }
+
+    lists[String(arr[i].head)].push(arr[i]);
+  }
+
+  for (let key in lists) {
+    lists[key].sort((a, b) => {
+      if (a.sorthead > b.sorthead) {
+        return 1;
+      } else {
+        return -1;
+      }
+    })
+  }
+
+  return lists;
+}
+
+// добавление обработчика клика узловым пунктам списка
+function addEvents() {
+  const nodalItems = priceList.querySelectorAll('.arrowRight');
+
+  for (let i = 0; i < nodalItems.length; i++) {
+    nodalItems[i].addEventListener('click', function() {
+      this.classList.toggle('arrowRight');
+      this.classList.toggle('arrowDown');
+      this.nextElementSibling.classList.toggle('hidden');
+    });
+  }
 }
 
 // имитация получения данных с сервера
