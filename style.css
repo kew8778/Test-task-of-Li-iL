@@ -16,12 +16,16 @@
   list-style-type: none;
 }
 
+.prizeList li {
+  display: flex;
+}
+
 .prizeList li:hover {
   background-color: #e5f3ff;
 }
 
 .prizeList svg {
-  padding: 0 10px;
+  padding: 7px;
 }
 
 .prizeList svg:hover polyline {

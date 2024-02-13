@@ -32,7 +32,7 @@ function getList(obj, key = 'null', nesting = 0) {
       span.textContent = item.name;
 
       const arrow = getArrowRight(); // стрелка перед span
-      li.style.paddingLeft = nesting * 10 + 'px'; // отступ слева для вложенных списков
+      li.style.paddingLeft = nesting * 7 + 'px'; // отступ слева для вложенных списков
       li.appendChild(arrow);
       li.appendChild(span);
       li.classList.add('arrowRight');
@@ -43,7 +43,7 @@ function getList(obj, key = 'null', nesting = 0) {
       ul.appendChild(getList(obj, String(item.id), nesting + 1)); // добавление внутренних списков
     } else {
       span.textContent = `${item.name} (${item.price})`;
-      li.style.paddingLeft = nesting * 10 + 30 + 'px';
+      li.style.paddingLeft = nesting * 7 + 24 + 'px';
 
       li.appendChild(span);
       ul.appendChild(li);
@@ -85,8 +85,8 @@ function getObjLists(arr) {
 }
 
 /**
- * Вывод списка на страницу
- * @param {SVGSVGElement} elem 
+ * Обработчик клика узловых пунктов
+ * @param elem {HTMLLIElement} - узловой пункт li
  */
 function addEvents(elem) {
   elem.addEventListener('click', function() {
