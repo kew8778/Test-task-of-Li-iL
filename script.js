@@ -1,17 +1,25 @@
 'use strict';
 
-const priceList = document.querySelector('.prizeList');
-showList(priceList);
+showList();
 
-// вывод списка на страницу
-async function showList(parent) {
+/**
+ * Вывод списка на страницу
+ */
+async function showList() {
   const arr = (await getResponceServer()).services; // массив 'services' из данных серевера
   const lists = getObjLists(arr); // объект отсортированных списков
-  parent.appendChild(getList(lists)); // вывод списка на страницу
+  const priceList = document.querySelector('.prizeList'); // родительский блок списка
+  priceList.appendChild(getList(lists)); // вывод списка на страницу
 }
 
-// получаем DOM-дерево списка
-function getList(obj, key = 'null') {
+/**
+ * Получение DOM-дерева списка
+ * @param obj {Object.<string, Array.Object>} Отсортированные списки {'head': [{}]}
+ * @param [key='null'] {string} id узлового элемента
+ * @param [nesting=0] {number} вложенность списка
+ * @returns HTMLUListElement
+ */
+function getList(obj, key = 'null', nesting = 0) {
   const ul = document.createElement('ul');
 
   if (key > 0) {
@@ -20,16 +28,28 @@ function getList(obj, key = 'null') {
 
   for (let i = 0; i < obj[key].length; i++) {
     const li = document.createElement('li');
+    const span = document.createElement('span');
+
     const item = obj[key][i];
 
     if (item.node) {
-      li.textContent = item.name;
-      li.classList.add('arrowRight');
-      addEvents(li); // добавление события клика
+      span.textContent = item.name;
+
+      const arrow = getArrowRight(); // стрелка перед span
+      arrow.style.marginLeft = nesting * 10 + 'px'; // отступ слева для вложенных списков
+
+      li.appendChild(arrow);
+      li.appendChild(span);
+
+      addEvents(arrow); // добавление события клика на стрелку
+
       ul.appendChild(li);
-      ul.appendChild(getList(obj, String(item.id))); // добавление внутренних списков
+      ul.appendChild(getList(obj, String(item.id), nesting + 1)); // добавление внутренних списков
     } else {
-      li.textContent = `${item.name} (${item.price})`;
+      span.textContent = `${item.name} (${item.price})`;
+      span.style.marginLeft = nesting * 10 + 30 + 'px';
+
+      li.appendChild(span);
       ul.appendChild(li);
     }
   }
@@ -37,8 +57,11 @@ function getList(obj, key = 'null') {
   return ul;
 }
 
-// преобразуем данные в объект отсортированных списков 
-// return {'id': [{объект с head == id}, ...], ...}
+/**
+ * Преобразование данных
+ * @param arr {Array.Object} - массив 'services' из данных API
+ * @returns {Object.<string, Array.Object>} - {'id': [{объект с head == id}, ...], ...}
+ */
 function getObjLists(arr) {
   const lists = {};
 
@@ -65,24 +88,58 @@ function getObjLists(arr) {
   return lists;
 }
 
-// добавление обработчика клика узловым пунктам списка
+/**
+ * Вывод списка на страницу
+ * @param {SVGSVGElement} elem 
+ */
 function addEvents(elem) {
   elem.addEventListener('click', function() {
-    this.classList.toggle('arrowRight');
     this.classList.toggle('arrowDown');
-    this.nextElementSibling.classList.toggle('hidden');
+    this.parentElement.nextElementSibling.classList.toggle('hidden');
   });
 }
 
-// имитация получения данных с сервера
+/**
+ * Получение SVG-стрелки
+ * @returns {SVGSVGElement}
+ */
+function getArrowRight() {
+  const xmlns = 'http://www.w3.org/2000/svg';
+  const width = '10px'; // ширина svg
+  const height = '10px'; // высота svg
+  const stroke = '#a6a6a6'; // цвет стрелки
+
+  const svg = document.createElementNS(xmlns, 'svg');
+  svg.setAttributeNS(null, 'viewBox', '0 0 100 100');
+  svg.setAttributeNS(null, 'width', width);
+  svg.setAttributeNS(null, 'height', height);
+
+  const polyline = document.createElementNS(xmlns, 'polyline');
+  polyline.setAttributeNS(null, 'points', '30 10 70 50 30 90');
+  polyline.setAttributeNS(null, 'stroke-width', '15px');
+  polyline.setAttributeNS(null, 'fill', 'transparent');
+  polyline.setAttributeNS(null, 'stroke', stroke);
+
+  svg.appendChild(polyline);
+
+  return svg;
+}
+
+/**
+ * Запрос на сервер (имитация)
+ * @returns {Promise<void>}
+ */
 async function getResponceServer() {
-  let response = await setResponceServer(); // await fetch(url запроса); - если GET
-  let res = await JSON.parse(response); // await response.json();
+  const response = await setResponceServer(); // await fetch(url запроса); - если GET
+  const res = await JSON.parse(response); // await response.json();
 
   return res;
 }
 
-// заглушка ответа сервера (данные в JSON)
+/**
+ * Ответ сервера (для тестинга)
+ * @returns {Promise<void>} JSON
+ */
 function setResponceServer() {
   return new Promise((resolve) => {
     setTimeout(() => {

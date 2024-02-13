@@ -1,20 +1,46 @@
+.prizeList {
+  font: 500 12px/24px "Segoe UI", sans-serif;
+
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-right: 1px solid #f7f7f7;
+  width: 300px;
+  padding: 1px;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
 .prizeList ul {
+  margin: 0;
+  padding: 0;
   list-style-type: none;
-  padding-left: 1em;
+}
+
+.prizeList li:hover {
+  background-color: #e5f3ff;
 }
 
 .hidden {
   display: none;
 }
 
-.arrowRight:hover, .arrowDown:hover {
+.prizeList span:hover {
   cursor: pointer;
 }
 
-.arrowRight {
-  list-style-image: url(arrow-right.svg);
+.prizeList svg {
+  padding: 0 10px;
+}
+
+.prizeList svg:hover polyline {
+  stroke: #51cff9;
 }
 
 .arrowDown {
-  list-style-image: url(arrow-down.svg);
+  transform: rotate(90deg);
+  padding: 10px 0;
+}
+
+.arrowDown polyline {
+  stroke: #404040;
 }
