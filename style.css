@@ -20,14 +20,6 @@
   background-color: #e5f3ff;
 }
 
-.hidden {
-  display: none;
-}
-
-.prizeList span:hover {
-  cursor: pointer;
-}
-
 .prizeList svg {
   padding: 0 10px;
 }
@@ -36,11 +28,24 @@
   stroke: #51cff9;
 }
 
-.arrowDown {
-  transform: rotate(90deg);
-  padding: 10px 0;
+.prizeList span:hover {
+  cursor: pointer;
 }
 
-.arrowDown polyline {
+/* Стрелка вправо */
+.arrowRight + ul {
+  display: none;
+}
+
+/* Стрелка вниз */
+.arrowDown + ul {
+  display: block;
+}
+
+.arrowDown svg {
+  transform: rotate(90deg); /* нужно разобраться с padding */
+}
+
+.arrowDown svg polyline {
   stroke: #404040;
 }

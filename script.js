@@ -22,10 +22,6 @@ async function showList() {
 function getList(obj, key = 'null', nesting = 0) {
   const ul = document.createElement('ul');
 
-  if (key > 0) {
-    ul.classList.add('hidden'); // скрываем внутренние списки
-  }
-
   for (let i = 0; i < obj[key].length; i++) {
     const li = document.createElement('li');
     const span = document.createElement('span');
@@ -36,10 +32,10 @@ function getList(obj, key = 'null', nesting = 0) {
       span.textContent = item.name;
 
       const arrow = getArrowRight(); // стрелка перед span
-      arrow.style.marginLeft = nesting * 10 + 'px'; // отступ слева для вложенных списков
-
+      li.style.paddingLeft = nesting * 10 + 'px'; // отступ слева для вложенных списков
       li.appendChild(arrow);
       li.appendChild(span);
+      li.classList.add('arrowRight');
 
       addEvents(arrow); // добавление события клика на стрелку
 
@@ -47,7 +43,7 @@ function getList(obj, key = 'null', nesting = 0) {
       ul.appendChild(getList(obj, String(item.id), nesting + 1)); // добавление внутренних списков
     } else {
       span.textContent = `${item.name} (${item.price})`;
-      span.style.marginLeft = nesting * 10 + 30 + 'px';
+      li.style.paddingLeft = nesting * 10 + 30 + 'px';
 
       li.appendChild(span);
       ul.appendChild(li);
@@ -94,8 +90,7 @@ function getObjLists(arr) {
  */
 function addEvents(elem) {
   elem.addEventListener('click', function() {
-    this.classList.toggle('arrowDown');
-    this.parentElement.nextElementSibling.classList.toggle('hidden');
+    this.parentElement.classList.toggle('arrowDown');
   });
 }
 
