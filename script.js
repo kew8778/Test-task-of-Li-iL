@@ -9,18 +9,20 @@ async function showList() {
   const arr = (await getResponceServer()).services; // массив 'services' из данных серевера
   const lists = getObjLists(arr); // объект отсортированных списков
   const priceList = document.querySelector('.prizeList'); // родительский блок списка
-  priceList.appendChild(getList(lists)); // вывод списка на страницу
+
+  // ниже нужно переделать
+  const ul = document.createElement('ul');
+  priceList.appendChild(ul);
+  getList(lists, ul); // вывод списка на страницу
 }
 
 /**
  * Получение DOM-дерева списка
  * @param obj {Object.<string, Array.Object>} Отсортированные списки {'head': [{}]}
+ * @param parent {HTMLUListElement} - DOM-элемент ul
  * @param [key='null'] {string} id узлового элемента
- * @returns HTMLUListElement
  */
-function getList(obj, key = 'null') {
-  const ul = document.createElement('ul');
-
+function getList(obj, parent, key = 'null') {
   for (let i = 0; i < obj[key].length; i++) {
     const li = document.createElement('li');
     const span = document.createElement('span');
@@ -34,20 +36,19 @@ function getList(obj, key = 'null') {
       li.appendChild(arrow);
       li.appendChild(span);
       li.classList.add('arrowRight');
+      parent.appendChild(li);
 
-      addEvents(arrow); // добавление события клика на стрелку
+      const ul = document.createElement('ul');
+      parent.appendChild(ul);
 
-      ul.appendChild(li);
-      ul.appendChild(getList(obj, String(item.id))); // добавление внутренних списков
+      addEvents(arrow, obj, ul, String(item.id)); // добавление события клика на стрелку
     } else {
       span.textContent = `${item.name} (${item.price})`;
 
       li.appendChild(span);
-      ul.appendChild(li);
+      parent.appendChild(li);
     }
   }
-
-  return ul;
 }
 
 /**
@@ -84,9 +85,13 @@ function getObjLists(arr) {
 /**
  * Обработчик клика узловых пунктов
  * @param elem {SVGSVGElement} - стрелка SVG
+ * @param obj {Object.<string, Array.Object>} Отсортированные списки {'head': [{}]}
+ * @param parent {HTMLUListElement} - DOM-элемент ul
+ * @param [key='null'] {string} id узлового элемента
  */
-function addEvents(elem) {
+function addEvents(elem, obj, parent, key) {
   elem.addEventListener('click', function() {
+    getList(obj, parent, key); // загрузка внутреннего списка
     this.parentElement.classList.toggle('arrowDown');
   });
 }
