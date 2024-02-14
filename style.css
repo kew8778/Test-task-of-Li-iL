@@ -16,8 +16,16 @@
   list-style-type: none;
 }
 
+.prizeList ul:not(.prizeList > ul) {
+  padding-left: 7px;
+}
+
 .prizeList li {
   display: flex;
+}
+
+.prizeList li:not(.arrowRight) {
+  padding-left: 24px;
 }
 
 .prizeList li:hover {
@@ -47,7 +55,7 @@
 }
 
 .arrowDown svg {
-  transform: rotate(90deg); /* нужно разобраться с padding */
+  transform: rotate(90deg);
 }
 
 .arrowDown svg polyline {

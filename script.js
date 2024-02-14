@@ -16,10 +16,9 @@ async function showList() {
  * Получение DOM-дерева списка
  * @param obj {Object.<string, Array.Object>} Отсортированные списки {'head': [{}]}
  * @param [key='null'] {string} id узлового элемента
- * @param [nesting=0] {number} вложенность списка
  * @returns HTMLUListElement
  */
-function getList(obj, key = 'null', nesting = 0) {
+function getList(obj, key = 'null') {
   const ul = document.createElement('ul');
 
   for (let i = 0; i < obj[key].length; i++) {
@@ -32,7 +31,6 @@ function getList(obj, key = 'null', nesting = 0) {
       span.textContent = item.name;
 
       const arrow = getArrowRight(); // стрелка перед span
-      li.style.paddingLeft = nesting * 7 + 'px'; // отступ слева для вложенных списков
       li.appendChild(arrow);
       li.appendChild(span);
       li.classList.add('arrowRight');
@@ -40,10 +38,9 @@ function getList(obj, key = 'null', nesting = 0) {
       addEvents(arrow); // добавление события клика на стрелку
 
       ul.appendChild(li);
-      ul.appendChild(getList(obj, String(item.id), nesting + 1)); // добавление внутренних списков
+      ul.appendChild(getList(obj, String(item.id))); // добавление внутренних списков
     } else {
       span.textContent = `${item.name} (${item.price})`;
-      li.style.paddingLeft = nesting * 7 + 24 + 'px';
 
       li.appendChild(span);
       ul.appendChild(li);
@@ -86,7 +83,7 @@ function getObjLists(arr) {
 
 /**
  * Обработчик клика узловых пунктов
- * @param elem {HTMLLIElement} - узловой пункт li
+ * @param elem {SVGSVGElement} - стрелка SVG
  */
 function addEvents(elem) {
   elem.addEventListener('click', function() {
