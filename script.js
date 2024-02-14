@@ -90,8 +90,11 @@ function getObjLists(arr) {
  * @param [key='null'] {string} id узлового элемента
  */
 function addEvents(elem, obj, parent, key) {
+  let i = 0; // избежание повторной загрузки внутреннего списка
+
   elem.addEventListener('click', function() {
-    getList(obj, parent, key); // загрузка внутреннего списка
+    if (!i) getList(obj, parent, key); // загрузка внутреннего списка
+    i++;
     this.parentElement.classList.toggle('arrowDown');
   });
 }
