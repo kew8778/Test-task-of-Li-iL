@@ -21,8 +21,9 @@ async function showList() {
  * @param obj {Object.<string, Array.Object>} Отсортированные списки {'head': [{}]}
  * @param parent {HTMLUListElement} - DOM-элемент ul
  * @param [key='null'] {string} id узлового элемента
+ * @param [nesting=0] {Number} - вложенность списка
  */
-function getList(obj, parent, key = 'null') {
+function getList(obj, parent, key = 'null', nesting = 0) {
   for (let i = 0; i < obj[key].length; i++) {
     const li = document.createElement('li');
     const span = document.createElement('span');
@@ -36,16 +37,18 @@ function getList(obj, parent, key = 'null') {
       li.appendChild(arrow);
       li.appendChild(span);
       li.classList.add('arrowRight');
+      li.style.paddingLeft = nesting * 7 + 'px';
       parent.appendChild(li);
 
       const ul = document.createElement('ul');
       parent.appendChild(ul);
 
-      addEvents(arrow, obj, ul, String(item.id)); // добавление события клика на стрелку
+      addEvents(arrow, obj, ul, String(item.id), nesting + 1); // добавление события клика на стрелку
     } else {
       span.textContent = `${item.name} (${item.price})`;
 
       li.appendChild(span);
+      li.style.paddingLeft = nesting * 7 + 24 + 'px';
       parent.appendChild(li);
     }
   }
@@ -88,13 +91,17 @@ function getObjLists(arr) {
  * @param obj {Object.<string, Array.Object>} Отсортированные списки {'head': [{}]}
  * @param parent {HTMLUListElement} - DOM-элемент ul
  * @param [key='null'] {string} id узлового элемента
+ * @param nesting {Number} - вложенность списка
  */
-function addEvents(elem, obj, parent, key) {
+function addEvents(elem, obj, parent, key, nesting) {
   let i = 0; // избежание повторной загрузки внутреннего списка
 
   elem.addEventListener('click', function() {
-    if (!i) getList(obj, parent, key); // загрузка внутреннего списка
-    i++;
+    if (!i) {
+      getList(obj, parent, key, nesting); // загрузка внутреннего списка
+      i++;
+    }
+
     this.parentElement.classList.toggle('arrowDown');
   });
 }

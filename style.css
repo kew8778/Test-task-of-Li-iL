@@ -16,16 +16,8 @@
   list-style-type: none;
 }
 
-.prizeList ul:not(.prizeList > ul) {
-  padding-left: 7px;
-}
-
 .prizeList li {
   display: flex;
-}
-
-.prizeList li:not(.arrowRight) {
-  padding-left: 24px;
 }
 
 .prizeList li:hover {
