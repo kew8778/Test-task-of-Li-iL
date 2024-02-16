@@ -6,7 +6,7 @@ showList();
  * Вывод списка на страницу
  */
 async function showList() {
-  const arr = (await getResponceServer('/data.json')).services; // массив 'services' из данных серевера
+  const arr = (await getResponceServer('data.json')).services; // массив 'services' из данных серевера
   const lists = getObjLists(arr); // объект отсортированных списков
   const priceList = document.querySelector('.prizeList'); // родительский блок списка
 
