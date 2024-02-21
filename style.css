@@ -8,6 +8,9 @@
   padding: 1px;
   max-height: 100vh;
   overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
 }
 
 .prizeList ul {
@@ -37,19 +40,19 @@
 }
 
 /* Стрелка вправо */
-.arrowRight + ul {
+.prizeList .arrowRight + ul {
   display: none;
 }
 
 /* Стрелка вниз */
-.arrowDown + ul {
+.prizeList .arrowDown + ul {
   display: block;
 }
 
-.arrowDown svg {
+.prizeList .arrowDown svg {
   transform: rotate(90deg);
 }
 
-.arrowDown svg polyline {
+.prizeList .arrowDown svg polyline {
   stroke: #404040;
 }

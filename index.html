@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Блок прейскуранта</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">  
   </head>
-
   <body>
-    <div class="prizeList">
-      <script src="script.js"></script>
-    </div>
+    <script>     
+      ;(async function() {
+        let {buildPrizeList} = await import('./prizeList/script.js');
+        document.body.append(buildPrizeList());
+      }());     
+    </script>
   </body>
 </html>

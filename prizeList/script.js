@@ -1,29 +1,22 @@
-'use strict';
+const arr = (await getResponceServer('data.json')).services; // массив 'services' из данных серевера
+const lists = getObjLists(arr); // объект отсортированных списков
 
-showList();
+export function buildPrizeList() {
+  const ul = getList(lists);
+  ul.classList.add('prizeList');
 
-/**
- * Вывод списка на страницу
- */
-async function showList() {
-  const arr = (await getResponceServer('data.json')).services; // массив 'services' из данных серевера
-  const lists = getObjLists(arr); // объект отсортированных списков
-  const priceList = document.querySelector('.prizeList'); // родительский блок списка
-
-  // ниже нужно переделать
-  const ul = document.createElement('ul');
-  priceList.appendChild(ul);
-  getList(lists, ul); // вывод списка на страницу
+  return ul;
 }
 
 /**
  * Получение DOM-дерева списка
  * @param obj {Object.<string, Array.Object>} Отсортированные списки {'head': [{}]}
- * @param parent {HTMLUListElement} - DOM-элемент ul
  * @param [key='null'] {string} id узлового элемента
  * @param [nesting=0] {Number} - вложенность списка
  */
-function getList(obj, parent, key = 'null', nesting = 0) {
+function getList(obj, key = 'null', nesting = 0) {
+  const ul = document.createElement('ul');
+
   for (let i = 0; i < obj[key].length; i++) {
     const li = document.createElement('li');
     const span = document.createElement('span');
@@ -31,27 +24,24 @@ function getList(obj, parent, key = 'null', nesting = 0) {
     const item = obj[key][i];
 
     if (item.node) {
-      span.textContent = item.name;
+      span.append(item.name);
 
       const arrow = getArrowRight(); // стрелка перед span
-      li.appendChild(arrow);
-      li.appendChild(span);
+      li.append(arrow, span);
       li.classList.add('arrowRight');
       li.style.paddingLeft = nesting * 7 + 'px';
-      parent.appendChild(li);
 
-      const ul = document.createElement('ul');
-      parent.appendChild(ul);
-
-      addEvents(arrow, obj, ul, String(item.id), nesting + 1); // добавление события клика на стрелку
+      addEvents(arrow, obj, String(item.id), nesting + 1); // добавление события клика на стрелку
     } else {
-      span.textContent = `${item.name} (${item.price})`;
-
-      li.appendChild(span);
+      span.append(`${item.name} (${item.price})`);
+      li.append(span);
       li.style.paddingLeft = nesting * 7 + 24 + 'px';
-      parent.appendChild(li);
     }
+
+    ul.append(li);
   }
+
+  return ul;
 }
 
 /**
@@ -89,20 +79,21 @@ function getObjLists(arr) {
  * Обработчик клика узловых пунктов
  * @param elem {SVGSVGElement} - стрелка SVG
  * @param obj {Object.<string, Array.Object>} Отсортированные списки {'head': [{}]}
- * @param parent {HTMLUListElement} - DOM-элемент ul
  * @param [key='null'] {string} id узлового элемента
  * @param nesting {Number} - вложенность списка
  */
-function addEvents(elem, obj, parent, key, nesting) {
+function addEvents(elem, obj, key, nesting) {
+
   let i = 0; // избежание повторной загрузки внутреннего списка
 
-  elem.addEventListener('click', function() {
+  elem.addEventListener('click', function(event) {
     if (!i) {
-      getList(obj, parent, key, nesting); // загрузка внутреннего списка
+      this.parentElement.after(getList(obj, key, nesting)); // загрузка внутреннего списка
       i++;
     }
 
     this.parentElement.classList.toggle('arrowDown');
+    event.stopImmediatePropagation();
   });
 }
 
@@ -139,7 +130,7 @@ function getArrowRight() {
  */
 async function getResponceServer(url) {
   const response = await fetch(url);
-  const res = response.json();
+  const res = await response.json();
 
   return res;
 }
